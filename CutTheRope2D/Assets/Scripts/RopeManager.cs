@@ -6,7 +6,9 @@ public class RopeManager : MonoBehaviour
 {
     public Rigidbody2D firstHook;
     public int connectionCount = 5;
-    public GameObject connectionPrefab;
+    public GameObject[] connectionPool;
+    public string hingeName;
+    public Ball ball;
 
     void Start()
     {
@@ -25,17 +27,18 @@ public class RopeManager : MonoBehaviour
 
         for (int i = 0; i < connectionCount; i++)
         {
-            GameObject connection = Instantiate(connectionPrefab, transform);
-            HingeJoint2D joint = connection.GetComponent<HingeJoint2D>();
+            connectionPool[i].SetActive(true);
+
+            HingeJoint2D joint = connectionPool[i].GetComponent<HingeJoint2D>();
             joint.connectedBody = previousConnection;
 
             if (i < connectionCount - 1)
             {
-                previousConnection = connection.GetComponent<Rigidbody2D>();
+                previousConnection = connectionPool[i].GetComponent<Rigidbody2D>();
             }
             else
             {
-                Ball.ballInstance.TieLastRope(connection.GetComponent<Rigidbody2D>());
+                ball.TieLastRope(connectionPool[i].GetComponent<Rigidbody2D>(), hingeName);
             }
         }
     }
